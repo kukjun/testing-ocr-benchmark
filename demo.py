@@ -1,5 +1,6 @@
 import string
 import argparse
+from collections import OrderedDict
 
 import torch
 import torch.backends.cudnn as cudnn
@@ -10,6 +11,14 @@ from utils import CTCLabelConverter, AttnLabelConverter
 from dataset import RawDataset, AlignCollate
 from model import Model
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# def _sync_tensor_name(state_dict):
+#     state_dict_ = OrderedDict()
+#     for name, val in state_dict.items():
+#         name = name.replace("module.", "")
+#         state_dict_[name] = val
+#     return state_dict_
+
 
 
 def demo(opt):
@@ -30,7 +39,11 @@ def demo(opt):
 
     # load model
     print('loading pretrained model from %s' % opt.saved_model)
-    model.load_state_dict(torch.load(opt.saved_model, map_location=device))
+    state_dict = torch.load(opt.saved_model, map_location=device)
+    # print(f'before: torch.load(opt.saved_model, map_location=device): {state_dict}')
+    # state_dict = _sync_tensor_name(state_dict)
+    # print(f'after: torch.load(opt.saved_model, map_location=device): {state_dict}')
+    model.load_state_dict(state_dict)
 
     # prepare data. two demo images from https://github.com/bgshih/crnn#run-demo
     AlignCollate_demo = AlignCollate(imgH=opt.imgH, imgW=opt.imgW, keep_ratio_with_pad=opt.PAD)

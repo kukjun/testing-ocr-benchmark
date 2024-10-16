@@ -10,8 +10,9 @@ from natsort import natsorted
 from PIL import Image
 import numpy as np
 from torch.utils.data import Dataset, ConcatDataset, Subset
-from torch._utils import _accumulate
 import torchvision.transforms as transforms
+from itertools import accumulate as _accumulate
+
 
 
 class Batch_Balanced_Dataset(object):
@@ -35,10 +36,13 @@ class Batch_Balanced_Dataset(object):
         self.dataloader_iter_list = []
         batch_size_list = []
         Total_batch_size = 0
+        print(f"opt.select_data: {opt.select_data}")
+        print(f"opt.batch_ratio: {opt.batch_ratio}")
         for selected_d, batch_ratio_d in zip(opt.select_data, opt.batch_ratio):
             _batch_size = max(round(opt.batch_size * float(batch_ratio_d)), 1)
             print(dashed_line)
             log.write(dashed_line + '\n')
+            print(f"selected_d: {selected_d}")
             _dataset, _dataset_log = hierarchical_dataset(root=opt.train_data, opt=opt, select_data=[selected_d])
             total_number_dataset = len(_dataset)
             log.write(_dataset_log)
@@ -53,6 +57,7 @@ class Batch_Balanced_Dataset(object):
             indices = range(total_number_dataset)
             _dataset, _ = [Subset(_dataset, indices[offset - length:offset])
                            for offset, length in zip(_accumulate(dataset_split), dataset_split)]
+            print(f"_dataset: {_dataset}")
             selected_d_log = f'num total samples of {selected_d}: {total_number_dataset} x {opt.total_data_usage_ratio} (total_data_usage_ratio) = {len(_dataset)}\n'
             selected_d_log += f'num samples of {selected_d} per batch: {opt.batch_size} x {float(batch_ratio_d)} (batch_ratio) = {_batch_size}'
             print(selected_d_log)
@@ -102,11 +107,14 @@ class Batch_Balanced_Dataset(object):
 
 def hierarchical_dataset(root, opt, select_data='/'):
     """ select_data='/' contains all sub-directory of root directory """
+    print(f"select_data: {select_data}")
     dataset_list = []
     dataset_log = f'dataset_root:    {root}\t dataset: {select_data[0]}'
     print(dataset_log)
     dataset_log += '\n'
     for dirpath, dirnames, filenames in os.walk(root+'/'):
+        print(f"dirpath, dirnames, filenames: {dirpath}, {dirnames}, {filenames}")
+        print(f"dirnames: {dirnames}")
         if not dirnames:
             select_flag = False
             for selected_d in select_data:
@@ -114,13 +122,16 @@ def hierarchical_dataset(root, opt, select_data='/'):
                     select_flag = True
                     break
 
+            print(f"select_flag: {select_flag}")
             if select_flag:
+                print(f"select_flag: {select_flag}")
                 dataset = LmdbDataset(dirpath, opt)
+                print(f"dataset: {dataset}")
                 sub_dataset_log = f'sub-directory:\t/{os.path.relpath(dirpath, root)}\t num samples: {len(dataset)}'
                 print(sub_dataset_log)
                 dataset_log += f'{sub_dataset_log}\n'
                 dataset_list.append(dataset)
-
+    print(f"dataset_list: {dataset_list}")
     concatenated_dataset = ConcatDataset(dataset_list)
 
     return concatenated_dataset, dataset_log

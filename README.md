@@ -190,3 +190,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+
+
+poetry run python3 train.py --train_data lmdb/training --valid_data lmdb/validation --select_data MJ-ST --batch_ratio 0.5-0.5 --Transformation None --FeatureExtraction VGG --SequenceModeling BiLSTM --Prediction CTC --saved_model ./saved_models/pre_training/None-VGG-BiLSTM-CTC.pth --FT

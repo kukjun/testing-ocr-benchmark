@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "deep-text-recognition-benchmark"
+version = "0.1.0"
+description = ""
+authors = ["Kukjun Lee <lxx3380@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fire = "^0.7.0"
+lmdb = "^1.5.1"
+opencv-python = "^4.10.0.84"
+torch = "^2.4.1"
+nltk = "^3.9.1"
+six = "^1.16.0"
+natsort = "^8.4.0"
+pillow = "^10.4.0"
+torchvision = "^0.19.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
