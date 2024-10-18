@@ -24,12 +24,8 @@ class VGG_FeatureExtractor(nn.Module):
             nn.MaxPool2d((2, 1), (2, 1)),  # 512x2x25
             # nn.Conv2d(self.output_channel[3], self.output_channel[3], 2, 1, 0), nn.ReLU(True))  # 512x1x24
             # BrainOCR Update
-            nn.ConvTranspose2d(self.output_channel[3],
-                               self.output_channel[3], 2, 2),
-            nn.ReLU(True),  # 512x4x50
-            nn.ConvTranspose2d(self.output_channel[3],
-                               self.output_channel[3], 2, 2),
-            nn.ReLU(True),
+            nn.ConvTranspose2d(self.output_channel[3], self.output_channel[3], 2, 2), nn.ReLU(True),  # 512x4x50
+            nn.ConvTranspose2d(self.output_channel[3], self.output_channel[3], 2, 2), nn.ReLU(True),
         )
 
     def forward(self, input):
