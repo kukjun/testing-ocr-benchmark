@@ -12,6 +12,13 @@ poetry install
 ```
 
 <br>
+
+> saved_modes/brainocr.pt 파일이 필요
+ 
+brainocr은 nas에 올라가있음.
+
+
+<br>
 <br>
 
 ai_hub_json to txt 
