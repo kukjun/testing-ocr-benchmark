@@ -4,6 +4,7 @@ import time
 import random
 import string
 import argparse
+from datetime import datetime
 
 import torch
 import torch.backends.cudnn as cudnn
@@ -284,9 +285,12 @@ if __name__ == '__main__':
 
     opt = parser.parse_args()
 
+
+    current_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
     if not opt.exp_name:
         opt.exp_name = f'{opt.Transformation}-{opt.FeatureExtraction}-{opt.SequenceModeling}-{opt.Prediction}'
-        opt.exp_name += f'-Seed{opt.manualSeed}'
+        opt.exp_name += f'-Seed{current_datetime}'
+        # opt.exp_name += f'-Seed{opt.manualSeed}'
         # print(opt.exp_name)
 
     os.makedirs(f'./saved_models/{opt.exp_name}', exist_ok=True)
@@ -321,5 +325,5 @@ if __name__ == '__main__':
         If you dont care about it, just commnet out these line.)
         opt.num_iter = int(opt.num_iter / opt.num_gpu)
         """
-
+    print(f"opt:{opt}")
     train(opt)
